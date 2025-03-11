@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,11 +24,16 @@ export default function RootLayout({
         <body className={`${inter.className} `}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <div className="flex">
+              <Sidebar />
+              <div className="w-screen overflow-hidden h-screen">
+                {children}
+              </div>
+            </div>
           </ThemeProvider>
         </body>
       </html>

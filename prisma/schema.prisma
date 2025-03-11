@@ -32,6 +32,7 @@ model User {
   location              String?
   bio                   String?
   Like                  Like[]
+  Comment               Comment[]
 }
 
 model Post {
@@ -43,22 +44,22 @@ model Post {
   authorId      String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  author        User?          @relation(fields: [authorId], references: [id])
+  author        User?          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   notifications Notification[]
 
   @@index([id, authorId])
 }
 
 model Like {
-  id            String         @id @default(cuid())
-  postId        String
-  likerId       String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  likePost      Post           @relation(fields: [postId], references: [id])
-  liker         User           @relation(fields: [likerId], references: [id])
-  notifications Notification[]
+  id        String   @id @default(cuid())
+  postId    String
+  likerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likePost  Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  liker     User     @relation(fields: [likerId], references: [id], onDelete: Cascade)
 
+  @@unique([postId, likerId])
   @@index([postId, likerId])
 }
 
@@ -69,7 +70,8 @@ model Comment {
   text          String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  commentPost   Post           @relation(fields: [commentorId], references: [id])
+  commentPost   Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentor     User           @relation(fields: [commentorId], references: [id], onDelete: Cascade)
   notifications Notification[]
 
   @@unique([postId, commentorId])
@@ -81,33 +83,27 @@ model Notification {
   notificationType       NotificationType
   notificationCreatorId  String
   notificationReceiverId String
-  notificationCreated    User?            @relation("notificationsCreated", fields: [notificationCreatorId], references: [id])
-  notificationReceived   User?            @relation("notificationRecieved", fields: [notificationReceiverId], references: [id])
+  notificationCreated    User?            @relation("notificationsCreated", fields: [notificationCreatorId], references: [id], onDelete: Cascade)
+  notificationReceived   User?            @relation("notificationRecieved", fields: [notificationReceiverId], references: [id], onDelete: Cascade)
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   isRead                 Boolean          @default(false)
 
-  Post              Post?    @relation(fields: [postId], references: [id])
-  postId            String?
-  Like              Like?    @relation(fields: [likeId], references: [id])
-  likeId            String?
-  Follow            Follow?  @relation(fields: [followFollowerId, followFollowingId], references: [followerId, followingId])
-  followFollowerId  String?
-  followFollowingId String?
-  Comment           Comment? @relation(fields: [commentId], references: [id])
-  commentId         String?
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
 
   @@index([notificationReceiverId, createdAt])
 }
 
 model Follow {
-  followerId    String
-  followingId   String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  following     User?          @relation("following", fields: [followingId], references: [id])
-  followers     User?          @relation("followers", fields: [followerId], references: [id])
-  notifications Notification[]
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  following   User?    @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  followers   User?    @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
 
   @@id([followerId, followingId])
   @@index([followerId, followingId])
