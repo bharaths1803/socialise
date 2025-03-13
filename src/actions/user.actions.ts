@@ -23,8 +23,7 @@ export async function syncUser() {
         email: user.emailAddresses[0].emailAddress,
         name: `${user.firstName || ""} ${user.lastName || ""}`,
         username:
-          user.username ??
-          `${user.emailAddresses[0].emailAddress.split("@")[0]}`,
+          user.username ?? user.emailAddresses[0].emailAddress.split("@")[0],
         image: user.imageUrl,
       },
     });

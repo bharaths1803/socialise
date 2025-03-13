@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Header from "@/components/Header";
+import { Toaster } from "react-hot-toast";
 import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,6 +34,7 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

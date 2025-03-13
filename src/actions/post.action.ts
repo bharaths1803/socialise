@@ -1,3 +1,5 @@
+"use server";
+
 import prisma from "@/lib/prisma";
 import { getDbUserId } from "./user.actions";
 import image from "next/image";
