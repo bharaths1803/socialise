@@ -28,12 +28,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex">
-              <Sidebar />
-              <div className="w-screen overflow-hidden h-screen">
-                {children}
-              </div>
-            </div>
+            <Sidebar />
+            <main>{children}</main>
             <Toaster />
           </ThemeProvider>
         </body>

@@ -69,8 +69,8 @@ const CreatePostDialog = ({
                 <X className="size-6" />
               </button>
             </div>
-            <div className="w-2xl grid grid-cols-2 border-2 border-gray-600 rounded-lg h-full">
-              <div className="flex flex-col justify-center items-center h-full bg-[#262626] rounded-lg rounded-br-none rounded-tr-none space-y-6">
+            <div className="w-2xl grid grid-cols-2 border-2 border-gray-600 rounded-lg h-full bg-[#262626]">
+              <div className="flex flex-col justify-center items-center h-full rounded-lg rounded-br-none rounded-tr-none space-y-6">
                 {imageUrl ? (
                   <img
                     className="h-full rounded-lg"

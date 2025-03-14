@@ -88,7 +88,7 @@ export async function getRandomUsers() {
         },
       },
     },
-    take: 3,
+    take: 5,
   });
   return randomUsers;
 }

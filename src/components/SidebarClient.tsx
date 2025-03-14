@@ -4,8 +4,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Home, Search, Heart, LogOut, PlusSquare } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
-import { createPost } from "@/actions/post.action";
-import toast from "react-hot-toast";
 import CreatePostDialog from "./CreatePostDialog";
 
 const SidebarClient = () => {
@@ -17,7 +15,7 @@ const SidebarClient = () => {
   };
 
   return (
-    <div className="h-screen w-screen">
+    <div className="">
       <CreatePostDialog
         open={isCreatePostDialogOpen}
         profilePicUrl={user?.imageUrl as unknown as string}
@@ -30,7 +28,7 @@ const SidebarClient = () => {
         onClose={handleCloseCreatePostDialog}
       />
       <aside className="border-r h-screen border-2 fixed left-0 w-60 py-7 px-2">
-        <h1 className="font-bold text-2xl pl-1">Swipify</h1>
+        <h1 className="font-bold text-2xl pl-1">Socialise</h1>
         <div className="h-full flex flex-col justify-between mt-10">
           <div className="space-y-4">
             <div className="flex gap-2 p-3 hover:bg-[#1a1a1a] active:bg-[#0d0d0d] hover:rounded-lg hover:cursor-pointer items-center">
