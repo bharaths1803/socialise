@@ -40,10 +40,10 @@ const EditProfilePageClient = ({ user }: { user: NonNullable<User> }) => {
   };
 
   return (
-    <div className="grid grid-cols-12 ml-64 ">
+    <div className="grid grid-cols-1 lg:grid-cols-12 ml-20 mr-4 lg:ml-64">
       <div className="col-span-9 overflow-y-auto max-h-screen no-scrollbar">
         <div className="container flex flex-col justify-center items-center my-6">
-          <div className="w-2xl space-y-3">
+          <div className="w-full md:w-md lg:w-lg xl:w-xl space-y-3">
             <h2 className="text-white font-bold text-3xl w-full">
               Edit Profile
             </h2>
@@ -131,7 +131,7 @@ const EditProfilePageClient = ({ user }: { user: NonNullable<User> }) => {
           </div>
         </div>
       </div>
-      <div className="col-span-3"></div>
+      <div className="hidden lg:block md:col-span-3"></div>
     </div>
   );
 };
