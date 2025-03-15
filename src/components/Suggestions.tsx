@@ -6,6 +6,7 @@ import Link from "next/link";
 const Suggestions = async () => {
   const users = await getRandomUsers();
   const { userId: clerkId } = await auth();
+  if (!clerkId) return null;
   const currentUser = await getUserByClerkId(clerkId as unknown as string);
   if (!currentUser) return null;
 
