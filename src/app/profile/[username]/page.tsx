@@ -8,8 +8,13 @@ import { getDbUserId } from "@/actions/user.actions";
 import ProfilePageClient from "@/components/ProfilePageClient";
 import { notFound } from "next/navigation";
 
-const ProfilePage = async ({ params }: { params: { username: string } }) => {
-  const user = await getProfileByUsername(params.username);
+const ProfilePage = async ({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) => {
+  const { username } = await params;
+  const user = await getProfileByUsername(username);
   const dbUserId = await getDbUserId();
   if (!user) notFound();
 

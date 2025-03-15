@@ -1,16 +1,15 @@
 import { getProfileByUsername } from "@/actions/profile.action";
-import { getDbUserId } from "@/actions/user.actions";
 import EditProfilePageClient from "@/components/EditProfilePageClient";
 import { notFound } from "next/navigation";
 
 const EditProfilePage = async ({
   params,
 }: {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }) => {
-  const user = await getProfileByUsername(params.username);
+  const { username } = await params;
+  const user = await getProfileByUsername(username);
   if (!user) notFound();
-
   return <EditProfilePageClient user={user} />;
 };
 
