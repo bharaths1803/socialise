@@ -2,10 +2,8 @@ import { getPosts } from "@/actions/post.action";
 import { getDbUserId } from "@/actions/user.actions";
 import PostCard from "@/components/PostCard";
 import Suggestions from "@/components/Suggestions";
-import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+
 import { currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
 
 export default async function Home() {
   const user = await currentUser();
