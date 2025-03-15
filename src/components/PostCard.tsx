@@ -18,15 +18,22 @@ import {
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import LikesDialog from "./LikesDialog";
+import { getUserPosts } from "@/actions/profile.action";
+import CommentsDialog from "./CommentsDialog";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 type Post = Posts[number];
+
+type UserPosts = Awaited<ReturnType<typeof getUserPosts>>;
+
+type UserPost = UserPosts[number];
 
 const PostCard = ({
   post,
   dbUserId,
 }: {
-  post: Post;
+  post: Post | UserPost;
   dbUserId: string | null;
 }) => {
   const { user } = useUser();
@@ -39,6 +46,8 @@ const PostCard = ({
   const [comment, setComment] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const commentTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [isLikesDialogOpen, setIsLikesDialogOpen] = useState(false);
+  const [isCommentsDialogOpen, setIsCommentsDialogOpen] = useState(false);
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -93,91 +102,123 @@ const PostCard = ({
     }
   };
 
-  return (
-    <div className="w-lg space-y-2">
-      <div className="flex justify-between">
-        <div className="flex gap-2">
-          <img
-            src={post.author?.image ?? "https://github.com/shadcn.png"}
-            alt="Post author image"
-            className="rounded-full size-5"
-          />
-          <h1 className="font-medium text-sm">
-            {post.author?.username}{" "}
-            <span className="text-gray-600">
-              {" "}
-              • {formatDistanceToNow(post.createdAt)}
-            </span>
-          </h1>
-        </div>
-        <button onClick={handleDeletePost} className="hover:cursor-pointer">
-          {isDeleting ? (
-            <Loader className="size-5 animate-spin" />
-          ) : (
-            <Trash2Icon className="size-5" />
-          )}
-        </button>
-      </div>
+  const handleLikesDialogClose = () => {
+    setIsLikesDialogOpen(false);
+  };
 
-      <div className="h-full py-3 w-full flex flex-col items-center">
-        <img src={post.image} className="h-full" />
-      </div>
-      <div className="flex gap-2">
-        <button
-          className="border-none size-7 hover:text-white/50"
-          onClick={handleLike}
-        >
-          <HeartIcon
-            className={`size-full ${hasLiked ? "fill-current" : ""}`}
-          />
-        </button>
-        <button
-          className="border-none size-7 hover:text-white/50"
-          onClick={handleComment}
-        >
-          <MessageCircle className="size-full" />
-        </button>
-      </div>
-      <span className="text-white font-semibold text-sm">
-        {optimisticLikes} likes
-      </span>
-      <div className="max-w-full text-sm">
-        {post.author?.username} <span className="">{post.text}</span>
-      </div>
-      {post._count.comments > 1 && (
-        <span className="text-gray-500 hover:cursor-pointer active:text-gray-600">
-          View All {post._count.comments} Comments
-        </span>
+  const hanldeCommentsDialogClose = () => {
+    setIsCommentsDialogOpen(false);
+  };
+
+  return (
+    <div>
+      {isLikesDialogOpen && (
+        <LikesDialog
+          open={isLikesDialogOpen}
+          onClose={handleLikesDialogClose}
+          post={post}
+        />
       )}
-      <div className="max-h-16 overflow-y-auto no-scrollbar">
-        {post.comments.map((comment) => (
-          <div className="flex space-x-2" key={comment.id}>
-            <span>{comment.commentor.username}</span>
-            <p className="mx-2 max-w-full">{comment.text}</p>
+      {isCommentsDialogOpen && (
+        <CommentsDialog
+          open={isCommentsDialogOpen}
+          onClose={hanldeCommentsDialogClose}
+          post={post}
+        />
+      )}
+      <div className="w-sm lg:w-lg space-y-2">
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            <img
+              src={post.author?.image ?? "https://github.com/shadcn.png"}
+              alt="Post author image"
+              className="rounded-full size-7"
+            />
+            <h1 className="font-medium text-sm">
+              {post.author?.username}{" "}
+              <span className="text-gray-600">
+                {" "}
+                • {formatDistanceToNow(post.createdAt)}
+              </span>
+            </h1>
           </div>
-        ))}
-      </div>
-      <textarea
-        className="max-h-40 overlfow-y-auto border-none focus:border-none outline-none focus:outline-none pr-2 resize-none w-full"
-        placeholder="Add a comment"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        maxLength={400}
-        ref={commentTextAreaRef}
-      />
-      <div className="w-full flex justify-end">
-        <button
-          className="p-2 bg-white text-black rounded-lg hover:bg-white/50 text-sm"
-          onClick={handleCreateComment}
-        >
-          {isCommenting ? (
-            <Loader className="size-5 animate-spin" />
-          ) : (
-            <SendHorizontal className="size-5" />
+          {post.authorId === dbUserId && (
+            <button onClick={handleDeletePost} className="hover:cursor-pointer">
+              {isDeleting ? (
+                <Loader className="size-5 animate-spin" />
+              ) : (
+                <Trash2Icon className="size-5" />
+              )}
+            </button>
           )}
-        </button>
+        </div>
+
+        <div className="h-full py-3 w-full flex flex-col items-center">
+          <img src={post.image} className="h-full" />
+        </div>
+        <div className="flex gap-2">
+          <button
+            className="border-none size-7 hover:text-white/50"
+            onClick={handleLike}
+          >
+            <HeartIcon
+              className={`size-full ${hasLiked ? "fill-current" : ""}`}
+            />
+          </button>
+          <button
+            className="border-none size-7 hover:text-white/50"
+            onClick={handleComment}
+          >
+            <MessageCircle className="size-full" />
+          </button>
+        </div>
+        <span
+          className="text-white font-semibold text-sm hover:cursor-pointer"
+          onClick={(e) => setIsLikesDialogOpen(true)}
+        >
+          {optimisticLikes} likes
+        </span>
+        <div className="max-w-full text-sm">
+          {post.author?.username} <span className="">{post.text}</span>
+        </div>
+        {post._count.comments > 1 && (
+          <span
+            className="text-gray-500 hover:cursor-pointer active:text-gray-600"
+            onClick={(e) => setIsCommentsDialogOpen(true)}
+          >
+            View All {post._count.comments} Comments
+          </span>
+        )}
+        <div className="max-h-16 overflow-y-auto no-scrollbar">
+          {post.comments.map((comment) => (
+            <div className="flex space-x-2" key={comment.id}>
+              <span>{comment.commentor.username}</span>
+              <p className="mx-2 max-w-full">{comment.text}</p>
+            </div>
+          ))}
+        </div>
+        <textarea
+          className="max-h-40 overlfow-y-auto border-none focus:border-none outline-none focus:outline-none pr-2 resize-none w-full"
+          placeholder="Add a comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          maxLength={400}
+          ref={commentTextAreaRef}
+        />
+        <div className="w-full flex justify-end">
+          <button
+            className="p-2 bg-white text-black rounded-lg hover:bg-white/50 text-sm"
+            onClick={handleCreateComment}
+          >
+            {isCommenting ? (
+              <Loader className="size-5 animate-spin" />
+            ) : (
+              <SendHorizontal className="size-5" />
+            )}
+          </button>
+        </div>
+        <div className="w-full h-[1px] bg-gray-600" />
       </div>
-      <div className="w-full h-[1px] bg-gray-600" />
     </div>
   );
 };

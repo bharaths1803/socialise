@@ -29,64 +29,10 @@ export async function getProfileByUsername(username: string) {
         },
       },
     });
+    return profile;
   } catch (error) {
     console.error("Error in getting profiles", error);
     throw new Error("Error fetching profiles");
-  }
-}
-
-export async function getUserPosts(userId: string) {
-  try {
-    const posts = await prisma.post.findMany({
-      where: {
-        authorId: userId,
-      },
-
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            username: true,
-            image: true,
-          },
-        },
-        likes: {
-          select: {
-            likerId: true,
-          },
-        },
-        comments: {
-          include: {
-            commentor: {
-              select: {
-                id: true,
-                name: true,
-                username: true,
-                image: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "asc",
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-            comments: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    return posts;
-  } catch (error) {
-    console.error("Error getting user posts", error);
-    throw new Error("Error getting user posts");
   }
 }
 
@@ -142,16 +88,13 @@ export async function updateProfile(formData: FormData) {
   }
 }
 
-export async function getUserLikedPosts(userId: string) {
+export async function getUserPosts(userId: string) {
   try {
-    const likedPosts = await prisma.post.findMany({
+    const posts = await prisma.post.findMany({
       where: {
-        likes: {
-          some: {
-            likerId: userId,
-          },
-        },
+        authorId: userId,
       },
+
       include: {
         author: {
           select: {
@@ -162,8 +105,15 @@ export async function getUserLikedPosts(userId: string) {
           },
         },
         likes: {
-          select: {
-            likerId: true,
+          include: {
+            liker: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
           },
         },
         comments: {
@@ -192,8 +142,74 @@ export async function getUserLikedPosts(userId: string) {
         createdAt: "desc",
       },
     });
+
+    return posts;
+  } catch (error) {
+    console.error("Error getting user posts", error);
+    throw new Error("Error getting user posts");
+  }
+}
+
+export async function getUserLikedPosts(userId: string) {
+  try {
+    const likedPosts = await prisma.post.findMany({
+      where: {
+        likes: {
+          some: {
+            likerId: userId,
+          },
+        },
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+          },
+        },
+        likes: {
+          include: {
+            liker: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+        comments: {
+          include: {
+            commentor: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return likedPosts;
   } catch (error) {
     console.log("Error in get user liked posts", error);
-    return { success: false, error: "Error getting user liked posts" };
+    throw new Error("Error getting user liked posts");
   }
 }

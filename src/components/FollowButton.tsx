@@ -1,5 +1,6 @@
 "use client";
 
+import { isFollowing } from "@/actions/profile.action";
 import { toggleFollow } from "@/actions/user.actions";
 import { Loader } from "lucide-react";
 import { useState } from "react";

@@ -55,7 +55,7 @@ const CreatePostDialog = ({
         <>
           <div className="fixed top-0 left-0 w-screen h-screen bg-black opacity-50 backdrop-blur-sm z-30" />
           <div className="fixed top-0 left-0 w-screen h-screen flex flex-col py-20 items-center space-y-4 z-50">
-            <div className="w-2xl flex justify-between">
+            <div className="w-md lg:w-2xl flex justify-between">
               <h2 className="text-white text-center w-full font-bold text-2xl">
                 Create Post
               </h2>
@@ -69,7 +69,7 @@ const CreatePostDialog = ({
                 <X className="size-6" />
               </button>
             </div>
-            <div className="w-2xl grid grid-cols-2 border-2 border-gray-600 rounded-lg h-full bg-[#262626]">
+            <div className="w-md lg:w-2xl grid grid-cols-2 border-2 border-gray-600 rounded-lg h-full bg-[#262626]">
               <div className="flex flex-col justify-center items-center h-full rounded-lg rounded-br-none rounded-tr-none space-y-6">
                 {imageUrl ? (
                   <img

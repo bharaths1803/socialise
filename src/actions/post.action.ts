@@ -60,8 +60,15 @@ export async function getPosts() {
           },
         },
         likes: {
-          select: {
-            likerId: true,
+          include: {
+            liker: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
           },
         },
         comments: {
@@ -121,7 +128,7 @@ export async function createComment(text: string, postId: string) {
         },
       });
 
-      if (newComment.commentorId !== userId) {
+      if (post.authorId !== userId) {
         await tx.notification.create({
           data: {
             notificationType: "COMMENT",
@@ -135,7 +142,7 @@ export async function createComment(text: string, postId: string) {
 
       return [newComment];
     });
-    revalidatePath("/");
+    revalidatePath("/notifications");
     return { success: true, comment };
   } catch (error) {
     console.log("Error creating comment", error);

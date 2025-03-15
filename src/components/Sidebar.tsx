@@ -8,9 +8,11 @@ import { useState } from "react";
 import CreatePost from "./CreatePostDialog";
 import { Home, Search, Heart, LogOut } from "lucide-react";
 import SidebarClient from "./SidebarClient";
+import { getNotifications } from "@/actions/notification.actions";
 
 const Sidebar = async () => {
   const user = await currentUser();
+  const notifications = await getNotifications();
   if (user) {
     await syncUser();
     return <SidebarClient />;
@@ -19,8 +21,8 @@ const Sidebar = async () => {
 
 const UnAuthenticatedSidbar = () => {
   return (
-    <aside className="border-r h-screen border-2 fixed left-0 w-60 py-7 flex flex-col justify-center items-center">
-      Unathuenticated
+    <aside className="border-r h-screen border-2 fixed left-0 hidden lg:w-60 py-7 lg:flex flex-col justify-center items-center">
+      <p className="text-xs">Sign in and Socialise</p>
     </aside>
   );
 };

@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { getDbUserId } from "./user.actions";
-import { error } from "console";
 
 export async function getNotifications() {
   try {
